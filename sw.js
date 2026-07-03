@@ -1,14 +1,38 @@
-{
-  "name": "家計簿",
-  "short_name": "家計簿",
-  "description": "レシート読み取り対応の家計簿アプリ",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#FBF3E4",
-  "theme_color": "#FA7B78",
-  "orientation": "portrait",
-  "icons": [
-    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
-  ]
-}
+const CACHE_NAME = 'kakeibo-v1';
+const CORE_ASSETS = ['/', '/index.html', '/manifest.json'];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(CORE_ASSETS))
+  );
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+    )
+  );
+  self.clients.claim();
+});
+
+self.addEventListener('fetch', (event) => {
+  // レシート解析APIは常にネットワークから取得する
+  if (event.request.url.includes('/api/')) return;
+
+  event.respondWith(
+    caches.match(event.request).then((cached) => {
+      if (cached) return cached;
+      return fetch(event.request)
+        .then((res) => {
+          if (event.request.method === 'GET' && res.ok) {
+            const clone = res.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          }
+          return res;
+        })
+        .catch(() => caches.match('/index.html'));
+    })
+  );
+});

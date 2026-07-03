@@ -10,7 +10,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Fraunces:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
 <style>
 :root{
   --bg:#FBF3E4;
@@ -329,11 +328,11 @@ canvas{max-width:100%;}
 <body>
 
 <header class="app-header">
-  <p class="app-title"><span class="mark"><i class="ti ti-notebook"></i></span>家計簿</p>
+  <p class="app-title"><span class="mark">📒</span>家計簿</p>
   <div class="month-nav">
-    <button id="prevMonth" aria-label="前の月"><i class="ti ti-chevron-left"></i></button>
+    <button id="prevMonth" aria-label="前の月">‹</button>
     <span class="month-label" id="monthLabel">2026年7月</span>
-    <button id="nextMonth" aria-label="次の月"><i class="ti ti-chevron-right"></i></button>
+    <button id="nextMonth" aria-label="次の月">›</button>
   </div>
 </header>
 
@@ -390,7 +389,7 @@ canvas{max-width:100%;}
     <p class="section-title">レシートをスキャン</p>
     <div class="scan-frame" id="scanFrame">
       <div class="scan-placeholder">
-        <div class="ic"><i class="ti ti-viewfinder"></i></div>
+        <div class="ic">📷</div>
         <p>カメラを起動してレシートを枠内に<br>収めてください。写真は保存されません。</p>
       </div>
       <video id="scanVideo" playsinline muted></video>
@@ -405,7 +404,7 @@ canvas{max-width:100%;}
     </div>
     <input type="file" accept="image/*" id="receiptFileInput" style="display:none;">
     <div class="privacy-note">
-      <span class="ic"><i class="ti ti-shield-check"></i></span>
+      <span class="ic">🔒</span>
       <span>撮影した画像はその場でAIが内容を読み取るためだけに使い、端末やアプリには保存されません。保存されるのは入力後に確定した金額やカテゴリなどの記録データのみです。</span>
     </div>
 
@@ -459,13 +458,13 @@ canvas{max-width:100%;}
 
 </main>
 
-<button class="fab" id="fabAdd" aria-label="記録を追加"><i class="ti ti-plus"></i></button>
+<button class="fab" id="fabAdd" aria-label="記録を追加">+</button>
 
 <nav class="tabbar">
-  <button class="tab-btn active" data-view="view-list"><span class="icon"><i class="ti ti-notebook"></i></span><span class="lbl">記録</span></button>
-  <button class="tab-btn" data-view="view-stats"><span class="icon"><i class="ti ti-chart-donut"></i></span><span class="lbl">集計</span></button>
-  <button class="tab-btn" data-view="view-receipt"><span class="icon"><i class="ti ti-camera"></i></span><span class="lbl">スキャン</span></button>
-  <button class="tab-btn" data-view="view-settings"><span class="icon"><i class="ti ti-settings"></i></span><span class="lbl">設定</span></button>
+  <button class="tab-btn active" data-view="view-list"><span class="icon">📒</span><span class="lbl">記録</span></button>
+  <button class="tab-btn" data-view="view-stats"><span class="icon">📊</span><span class="lbl">集計</span></button>
+  <button class="tab-btn" data-view="view-receipt"><span class="icon">📷</span><span class="lbl">スキャン</span></button>
+  <button class="tab-btn" data-view="view-settings"><span class="icon">⚙️</span><span class="lbl">設定</span></button>
 </nav>
 
 <!-- 追加/編集シート -->
@@ -531,13 +530,13 @@ const DEFAULT_CATEGORIES = {
 };
 
 const CAT_ICONS = {
-  '食費':'ti-tools-kitchen-2', '日用品':'ti-shopping-cart', '交通費':'ti-bus',
-  '住居費':'ti-home', '光熱費':'ti-bulb', '通信費':'ti-wifi',
-  '娯楽費':'ti-device-gamepad-2', '医療費':'ti-heart-plus', '被服費':'ti-shirt',
-  '交際費':'ti-users', 'その他':'ti-star',
-  '給与':'ti-briefcase', '賞与':'ti-gift', '副業':'ti-rocket',
+  '食費':'🍴', '日用品':'🛒', '交通費':'🚌',
+  '住居費':'🏠', '光熱費':'💡', '通信費':'📶',
+  '娯楽費':'🎮', '医療費':'🩹', '被服費':'👕',
+  '交際費':'🥂', 'その他':'✨',
+  '給与':'💼', '賞与':'🎁', '副業':'🚀',
 };
-function catIcon(name){ return CAT_ICONS[name] || 'ti-tag'; }
+function catIcon(name){ return CAT_ICONS[name] || '🏷️'; }
 
 function loadTx(){
   try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }catch(e){ return []; }
@@ -617,7 +616,7 @@ function renderList(){
   const list = txForCurrentMonth();
   const wrap = document.getElementById('txListWrap');
   if(list.length===0){
-    wrap.innerHTML = '<div class="empty-note"><i class="ti ti-feather ic"></i>この月の記録はまだありません<br>右下の + から追加、またはスキャンタブから読み取れます</div>';
+    wrap.innerHTML = '<div class="empty-note"><span class="ic">🍃</span>この月の記録はまだありません<br>右下の + から追加、またはスキャンタブから読み取れます</div>';
     return;
   }
   wrap.innerHTML = '<div class="ledger-card">' + renderGroupedList(list) + '</div>';
@@ -638,7 +637,7 @@ function renderGroupedList(list){
     const rows = g.items.map(t=>{
       const color = catColor(t.type, t.category);
       return `<div class="tx-row" data-id="${t.id}">
-        <div class="tx-icon-glyph" style="color:${color};"><i class="ti ${catIcon(t.category)}"></i></div>
+        <div class="tx-icon-glyph">${catIcon(t.category)}</div>
         <div class="tx-mid">
           <div class="tx-cat">${t.category}</div>
           ${t.memo ? `<div class="tx-sub">${escapeHtml(t.memo)}</div>` : ''}
@@ -824,7 +823,7 @@ function setSheetType(type, presetCat){
   const cats = categories[type];
   selectedCat = presetCat || cats[0].name;
   grid.innerHTML = cats.map(c=>
-    `<div class="cat-chip ${c.name===selectedCat?'active':''}" data-name="${c.name}"><i class="ti ${catIcon(c.name)}"></i>${c.name}</div>`
+    `<div class="cat-chip ${c.name===selectedCat?'active':''}" data-name="${c.name}">${catIcon(c.name)} ${c.name}</div>`
   ).join('');
   grid.querySelectorAll('.cat-chip').forEach(chip=>{
     chip.addEventListener('click', ()=>{
@@ -868,9 +867,9 @@ function renderCatSettings(){
     const el = document.getElementById(type==='expense'?'catListExpense':'catListIncome');
     el.innerHTML = categories[type].map((c,i)=>`
       <div class="cat-manage-row">
-        <div class="ic" style="color:${c.color};"><i class="ti ${catIcon(c.name)}"></i></div>
+        <div class="ic">${catIcon(c.name)}</div>
         <div class="nm">${c.name}</div>
-        <button data-type="${type}" data-idx="${i}" class="cat-del"><i class="ti ti-x"></i></button>
+        <button data-type="${type}" data-idx="${i}" class="cat-del">✕</button>
       </div>`).join('');
   });
   document.querySelectorAll('.cat-del').forEach(btn=>{
@@ -1048,7 +1047,7 @@ function addReceiptItemRow(name='', amount='', category=''){
     <input type="text" placeholder="品目名" value="${escapeHtml(name)}" class="rc-name">
     <select class="rc-cat">${catOptions}</select>
     <input type="number" placeholder="金額" value="${amount||''}" class="rc-amount">
-    <button class="rm"><i class="ti ti-x"></i></button>`;
+    <button class="rm">✕</button>`;
   row.querySelector('.rm').addEventListener('click', ()=> row.remove());
   document.getElementById('rcItems').appendChild(row);
 }
